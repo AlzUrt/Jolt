@@ -3,12 +3,70 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Get;
+use App\Controller\RegisterController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new Get(),
+        new Post(),
+        new Get(uriTemplate: '/users/{id}'),
+        new Put(),
+        new Delete(),
+        new Patch(),
+        new Post(
+            uriTemplate: '/register',
+            controller: RegisterController::class,
+            openapiContext: [
+                'summary' => 'Register a new user',
+                'description' => 'Register a new user by providing firstname, lastname, email, and password.',
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'firstname' => [
+                                        'type' => 'string',
+                                        'maxLength' => 255,
+                                    ],
+                                    'lastname' => [
+                                        'type' => 'string',
+                                        'maxLength' => 255,
+                                    ],
+                                    'email' => [
+                                        'type' => 'string',
+                                        'format' => 'email',
+                                        'maxLength' => 255,
+                                    ],
+                                    'password' => [
+                                        'type' => 'string',
+                                        'minLength' => 8,
+                                        'maxLength' => 255,
+                                    ],
+                                    'confirmPassword' => [
+                                        'type' => 'string',
+                                        'minLength' => 8,
+                                        'maxLength' => 255,
+                                    ],
+                                ],
+                                'required' => ['firstname', 'lastname', 'email', 'password', 'confirmPassword'],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        )
+    ]
+)]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -39,7 +97,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->firstname;
     }
 
-    public function setFirstame(string $firstname): static
+    public function setFirstname(string $firstname): static
     {
         $this->firstname = $firstname;
 
