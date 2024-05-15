@@ -2,17 +2,20 @@
 
 namespace App\Controller;
 
+use ApiPlatform\Metadata\Exception\HttpExceptionInterface;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class RegisterController extends AbstractController {
     public function __invoke(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response {
         $data = json_decode($request->getContent(), true);
         
+        // throw new HttpException(Response::HTTP_BAD_REQUEST, 'test');
     
         // Vérifier si tous les champs sont présents
         if (!isset($data['firstname']) || !isset($data['lastname']) || !isset($data['email']) || !isset($data['password']) || !isset($data['confirmPassword'])) {
