@@ -16,7 +16,7 @@ const Login = () => {
       <div className="bg-white border-solid border-4 border-zinc-500 p-10 rounded-lg w-3/6 text-center">
         <h2 className="text-6xl text-center mt-16 mb-2">Bienvenue sur Jolt</h2>
         <p className="text-center text-gray-600 mb-6 text-2xl">
-          Vous n'avez pas de compte ? <a href="#" className="text-yellow-500">Essayez gratuitement</a>
+          Vous n'avez pas de compte ? <button onClick={handleClick} className="text-yellow-500">Essayez gratuitement</button>
         </p>
         <button className="w-4/6 h-16 justify-center bg-yellow-500 hover:bg-yellow-600 py-2 px-4 rounded mb-4">
           Continuer avec Google
