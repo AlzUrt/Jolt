@@ -1,0 +1,36 @@
+name: Deploy React App
+
+on:
+  push:
+    branches:
+      - main  # Déclenche le workflow sur les pushs vers la branche main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'  # Vous pouvez spécifier la version de Node.js que vous utilisez
+
+    - name: Install dependencies
+      run: npm install
+      working-directory: ./frontend  # Remplacer par le chemin vers votre dossier frontend
+
+    - name: Build React app
+      run: npm run build
+      working-directory: ./frontend  # Remplacer par le chemin vers votre dossier frontend
+
+    - name: Deploy to Hostinger via FTP
+      uses: SamKirkland/FTP-Deploy-Action@4.1.0
+      with:
+        ftp-server: ftp://213.130.145.28
+        ftp-username: ${{ secrets.FTP_USERNAME }}
+        ftp-password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./frontend/build/
+        remote-dir: /public_html
