@@ -8,6 +8,10 @@ const Login = () => {
     setIsBannerVisible(false);
   };
 
+  const handleClick = () => {
+    alert('Vous avez cliqué sur le bouton "Essayez gratuitement"');
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative">
       <div className="flex justify-center mb-4">
