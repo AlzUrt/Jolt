@@ -29,8 +29,8 @@ jobs:
     - name: Deploy to Hostinger via FTP
       uses: SamKirkland/FTP-Deploy-Action@4.1.0
       with:
-        ftp-server: ftp://213.130.145.28
-        ftp-username: ${{ secrets.FTP_USERNAME }}
-        ftp-password: ${{ secrets.FTP_PASSWORD }}
+        server: ftp://213.130.145.28
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./frontend/build/
-        remote-dir: /public_html
+        server-dir: /public_html
