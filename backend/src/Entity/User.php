@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Get;
+use App\Controller\AuthController;
 use App\Controller\RegisterController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -34,29 +35,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
                             'schema' => [
                                 'type' => 'object',
                                 'properties' => [
-                                    'firstname' => [
-                                        'type' => 'string',
-                                        'maxLength' => 255,
-                                    ],
-                                    'lastname' => [
-                                        'type' => 'string',
-                                        'maxLength' => 255,
-                                    ],
-                                    'email' => [
-                                        'type' => 'string',
-                                        'format' => 'email',
-                                        'maxLength' => 255,
-                                    ],
-                                    'password' => [
-                                        'type' => 'string',
-                                        'minLength' => 8,
-                                        'maxLength' => 255,
-                                    ],
-                                    'confirmPassword' => [
-                                        'type' => 'string',
-                                        'minLength' => 8,
-                                        'maxLength' => 255,
-                                    ],
+                                    'firstname' => ['type' => 'string', 'maxLength' => 255],
+                                    'lastname' => ['type' => 'string', 'maxLength' => 255],
+                                    'email' => ['type' => 'string', 'format' => 'email', 'maxLength' => 255],
+                                    'password' => ['type' => 'string', 'minLength' => 8, 'maxLength' => 255],
+                                    'confirmPassword' => ['type' => 'string', 'minLength' => 8, 'maxLength' => 255],
                                 ],
                                 'required' => ['firstname', 'lastname', 'email', 'password', 'confirmPassword'],
                             ],
@@ -64,7 +47,29 @@ use Symfony\Component\Security\Core\User\UserInterface;
                     ],
                 ],
             ]
-        )
+        ),
+        new Post(
+            uriTemplate: '/login_check',
+            controller: AuthController::class,
+            openapiContext: [
+                'summary' => 'Authenticate user and get JWT token',
+                'description' => 'Authenticate user by providing email and password to get a JWT token.',
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'email' => ['type' => 'string', 'format' => 'email', 'maxLength' => 255],
+                                    'password' => ['type' => 'string', 'minLength' => 8, 'maxLength' => 255],
+                                ],
+                                'required' => ['email', 'password'],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        ),
     ]
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -142,15 +147,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        // Return the roles or permissions granted to the user
         return ['ROLE_USER'];
     }
 
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
     }
-
 
     public function getUserIdentifier(): string
     {

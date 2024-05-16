@@ -1,53 +1,60 @@
 import React, { useState } from "react";
 import Logo from "../images/logo.png";
 import CustomButton from "../components/CustomButton";
-import { useNavigate } from "react-router-dom";
+import CustomInput from "../components/CustomInput";
+import UserService from "../services/UserService";
+import Header from "../components/Header";
 
 const Login = () => {
-  const navigate = useNavigate();
-  const [isBannerVisible, setIsBannerVisible] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleCloseBanner = () => {
-    setIsBannerVisible(false);
-  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const userData = {
+      email,
+      password,
+    };
 
-  const handleClick = () => {
-    alert('Vous avez cliqué sur le bouton "Essayez gratuitement"');
-  };
-
-  const handleEmailClick = () => {
-    console.log('Vous avez cliqué sur le bouton "Continuer avec Email"');
-    navigate("/register");
+    try {
+      const loginedUser = await UserService.loginUser(userData);
+      console.log("Utilisateur inscrit:", loginedUser);
+    } catch (error) {
+      console.error("L'inscription a échoué:", error);
+    }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center relative">
-      <div className="flex justify-center mb-4">
-        <img src={Logo} alt="logo Jolt" className="h-48" />
-      </div>
-      <div className="bg-white border-solid border-4 border-zinc-500 p-10 rounded-lg w-3/6 text-center">
-        <h2 className="text-6xl text-center mt-16 mb-2">Bienvenue sur Jolt</h2>
-        <p className="text-center text-gray-600 mb-6 text-2xl">
-          Vous n'avez pas de compte ?{" "}
-          <button onClick={handleClick} className="text-yellow-500">
-            Essayez gratuitement
-          </button>
-        </p>
-        <CustomButton
-          text="Continuer avec Google"
-          className="bg-yellow-500 hover:bg-yellow-600"
-        />
-        <CustomButton text="Continuer avec Facebook" />
-        <CustomButton text="Continuer avec Email" onClick={handleEmailClick} />
-      </div>
-      {isBannerVisible && (
-        <div className="fixed bottom-0 left-0 right-0 bg-blue-600 text-white p-4 flex justify-between items-center">
-          <span>Bandeau d'information</span>
-          <button onClick={handleCloseBanner} className="text-white text-xl">
-            &times;
-          </button>
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <div className="flex-grow flex flex-col items-center justify-center">
+        <div className="flex justify-center mb-4">
+          <img src={Logo} alt="logo Jolt" className="h-48" />
         </div>
-      )}
+        <form
+          className="bg-white border-solid border-4 border-zinc-500 p-10 rounded-lg w-2/6 text-center"
+          onSubmit={handleSubmit}
+        >
+          <div className="flex justify-center mb-6">
+            <h1 className="text-4xl text-center mb-2">Bienvenue sur Jolt</h1>
+          </div>
+          <CustomInput
+            placeholder="Mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <CustomInput
+            placeholder="Mot de passe"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <CustomButton
+            text="Se connecter"
+            className="bg-yellow-500 hover:bg-yellow-600"
+            onClick={handleSubmit}
+          />
+        </form>
+      </div>
     </div>
   );
 };

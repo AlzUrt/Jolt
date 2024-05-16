@@ -14,9 +14,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class RegisterController extends AbstractController {
     public function __invoke(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response {
         $data = json_decode($request->getContent(), true);
-        
-        // throw new HttpException(Response::HTTP_BAD_REQUEST, 'test');
-    
+            
         // Vérifier si tous les champs sont présents
         if (!isset($data['firstname']) || !isset($data['lastname']) || !isset($data['email']) || !isset($data['password']) || !isset($data['confirmPassword'])) {
             return $this->json([
@@ -40,12 +38,6 @@ class RegisterController extends AbstractController {
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        // vérifier si le mot de passe est assez long
-        if (strlen($data['password']) < 8) {
-            return $this->json([
-                'message' => 'Le mot de passe doit contenir au moins 8 caractères.'
-            ], Response::HTTP_BAD_REQUEST);
-        }
 
         // vérifier que l'email est valide
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
@@ -53,14 +45,6 @@ class RegisterController extends AbstractController {
                 'message' => 'L\'email n\'est pas valide.'
             ], Response::HTTP_BAD_REQUEST);
         }
-
-        // le mot de passe doit avoir au moins une lettre et un chiffre et un caractère spécial
-        if (!preg_match('/[A-Za-z]/', $data['password']) || !preg_match('/[0-9]/', $data['password']) || !preg_match('/[^A-Za-z0-9]/', $data['password'])) {
-            return $this->json([
-                'message' => 'Le mot de passe doit contenir au moins une lettre, un chiffre et un caractère spécial.'
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
 
         // Créer un nouvel utilisateur
         $user = new User();
