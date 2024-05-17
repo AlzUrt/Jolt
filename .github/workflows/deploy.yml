@@ -38,6 +38,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'  # Spécifiez ici la version de PHP que vous utilisez
+
     - name: Create .env file
       run: |
         echo "APP_ENV=dev" > ./backend/.env
@@ -47,14 +55,6 @@ jobs:
         echo "JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem" >> ./backend/.env
         echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> ./backend/.env
         echo "JWT_PASSPHRASE=<JWT_PASSPHRASE>" >> ./backend/.env
-
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.3'  # Spécifiez ici la version de PHP que vous utilisez
 
     - name: Install Composer dependencies
       run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
