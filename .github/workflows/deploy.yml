@@ -6,7 +6,7 @@ on:
       - main  # Déclenche le workflow sur les pushs vers la branche main
 
 jobs:
-  build:
+  frontend:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,3 +34,39 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./frontend/build/
         server-dir: /public_html/
+  backend:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'  # Spécifiez ici la version de PHP que vous utilisez
+
+    - name: Install Composer dependencies
+      run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+      working-directory: ./backend  # Remplacez par le chemin vers votre dossier backend
+
+    - name: Cache Composer packages
+      uses: actions/cache@v2
+      with:
+        path: ${{ github.workspace }}/backend/vendor
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+
+    - name: Check Symfony requirements
+      run: php ./backend/bin/console about
+      working-directory: ./backend 
+
+    - name: Deploy to Hostinger via FTP
+      uses: SamKirkland/FTP-Deploy-Action@4.1.0
+      with:
+        server: chabertamaury.alwaysdata.net
+        username: ${{ secrets.FTP_USERNAME_BACK }}
+        password: ${{ secrets.FTP_PASSWORD_BACK }}
+        local-dir: ./backend/
+        server-dir: /home/chabertamaury/www/backend/
