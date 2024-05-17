@@ -2,9 +2,8 @@
 
 namespace App\Controller;
 
-use ApiPlatform\Metadata\Exception\HttpExceptionInterface;
-use App\Entity\User;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,8 +14,13 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 class AuthController extends AbstractController
 {
-    public function __invoke(Request $request, UserProviderInterface $userProvider, UserPasswordHasherInterface $passwordHasher, JWTTokenManagerInterface $JWTManager): Response
-    {
+    public function __invoke(
+        Request $request,
+        UserProviderInterface $userProvider,
+        UserPasswordHasherInterface $passwordHasher,
+        JWTTokenManagerInterface $JWTManager,
+        LoggerInterface $logger // Injection du logger ici
+    ): Response {
         $data = json_decode($request->getContent(), true);
 
         if (!isset($data['email']) || !isset($data['password'])) {
@@ -37,10 +41,18 @@ class AuthController extends AbstractController
             return $this->json(['message' => 'Email ou mot de passe incorrect.'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $token = $JWTManager->create($user);
+        try {
+            $token = $JWTManager->create($user);
+        } catch (\Exception $e) {
+            // Utilisation du logger injecté
+            $logger->error('JWT Token creation failed: ' . $e->getMessage());
+            dd($e->getMessage());
+            return $this->json(['message' => 'Failed to create JWT token.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         if (empty($token)) {
-            return $this->json(['message' => 'Failed to create JWT token.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            dd($token);
+            return $this->json(['message' => 'token is empty'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->json(['token' => $token]);
