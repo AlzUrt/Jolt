@@ -46,6 +46,9 @@ jobs:
       with:
         php-version: '8.3'  # Spécifiez ici la version de PHP que vous utilisez
 
+    - name: Check database connectivity
+      run: telnet mysql-chabertamaury.alwaysdata.net 3306
+
     - name: Create .env file
       run: |
         echo "APP_ENV=dev" > ./backend/.env
