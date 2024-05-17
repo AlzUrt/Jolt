@@ -11,10 +11,6 @@ const Index = () => {
     setIsBannerVisible(false);
   };
 
-  const handleClick = () => {
-    alert('Vous avez cliqué sur le bouton "Essayez gratuitement"');
-  };
-
   const handleEmailClick = () => {
     console.log('Vous avez cliqué sur le bouton "Continuer avec Email"');
     navigate("/register");

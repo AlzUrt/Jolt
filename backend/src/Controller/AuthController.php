@@ -19,7 +19,7 @@ class AuthController extends AbstractController
         UserProviderInterface $userProvider,
         UserPasswordHasherInterface $passwordHasher,
         JWTTokenManagerInterface $JWTManager,
-        LoggerInterface $logger // Injection du logger ici
+        LoggerInterface $logger
     ): Response {
         $data = json_decode($request->getContent(), true);
 
@@ -51,7 +51,6 @@ class AuthController extends AbstractController
         }
 
         if (empty($token)) {
-            dd($token);
             return $this->json(['message' => 'token is empty'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 

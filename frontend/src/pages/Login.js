@@ -4,8 +4,10 @@ import CustomButton from "../components/CustomButton";
 import CustomInput from "../components/CustomInput";
 import UserService from "../services/UserService";
 import Header from "../components/Header";
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -19,6 +21,10 @@ const Login = () => {
     try {
       const loginedUser = await UserService.loginUser(userData);
       console.log("Utilisateur inscrit:", loginedUser);
+      if (loginedUser.token) {
+        // Rediriger vers la page Index si le token est reçu
+        navigate("/homepage");
+      }
     } catch (error) {
       console.error("L'inscription a échoué:", error);
     }
