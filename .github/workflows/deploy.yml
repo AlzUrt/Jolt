@@ -46,8 +46,9 @@ jobs:
       with:
         php-version: '8.3'  # Spécifiez ici la version de PHP que vous utilisez
 
-    - name: Check database connectivity
-      run: telnet mysql-chabertamaury.alwaysdata.net 3306
+    - name: Test database connection
+      run: |
+        php -r '$conn = new PDO("mysql:host=mysql-chabertamaury.alwaysdata.net;port=3306;dbname=chabertamaury_jolt", "248271", "Amaury2002!"); echo "Connected successfully";'
 
     - name: Create .env file
       run: |
