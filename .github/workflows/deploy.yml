@@ -49,12 +49,12 @@ jobs:
     - name: Create .env file
       run: |
         echo "APP_ENV=dev" > ./backend/.env
-        echo "APP_SECRET=<APP_SECRET>" >> ./backend/.env
-        echo "DATABASE_URL=<DATABASE_URL>" >> ./backend/.env
+        echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> ./backend/.env
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./backend/.env
         echo "CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'" >> ./backend/.env
         echo "JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem" >> ./backend/.env
         echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> ./backend/.env
-        echo "JWT_PASSPHRASE=<JWT_PASSPHRASE>" >> ./backend/.env
+        echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> ./backend/.env
 
     - name: Print DATABASE_URL
       run: echo "DATABASE_URL=${{ env.DATABASE_URL }}"
