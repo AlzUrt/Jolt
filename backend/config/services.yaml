@@ -6,6 +6,12 @@
 parameters:
 
 services:
+    App\EventListener\JWTEventListener:
+        tags:
+            - { name: 'kernel.event_listener', event: 'lexik_jwt_authentication.on_jwt_invalid', method: 'onJWTInvalid' }
+            - { name: 'kernel.event_listener', event: 'lexik_jwt_authentication.on_jwt_expired', method: 'onJWTExpired' }
+            - { name: 'kernel.event_listener', event: 'lexik_jwt_authentication.on_jwt_not_found', method: 'onJWTNotFound' }
+
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.

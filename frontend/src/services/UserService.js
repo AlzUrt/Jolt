@@ -15,8 +15,10 @@ const loginUser = async (userData) => {
   console.log('Données utilisateur :', userData);
   try {
     const response = await api.post('/login_check', userData);
+    console.log("Réponse reçue :", response.data);
     const token = response.data.token;
-    localStorage.setItem('token', token);
+    console.log("Token reçu :", token);
+    localStorage.setItem('jwtToken', token);
     return response.data;
   } catch (error) {
     console.error("Erreur lors de la connexion:", error);
