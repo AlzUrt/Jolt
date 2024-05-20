@@ -50,20 +50,24 @@ jobs:
       run: echo "DATABASE_URL=${{ env.DATABASE_URL }}"
       working-directory: ./backend
     
-    - name: Print APP_SECRET
-      run: echo "APP_SECRET=${{ secrets.APP_SECRET }}"
+    - name: Print DATABASE_USER
+      run: echo "APP_SECRET=${{ secrets.DATABASE_USER }}"
       working-directory: ./backend
 
-    - name: Print JWT_PASSPHRASE
-      run: echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}"
+    - name: Print DATABASE_PASSWORD
+      run: echo "JWT_PASSPHRASE=${{ secrets.DATABASE_PASSWORD }}"
       working-directory: ./backend
     
-    - name: Print FTP_USERNAME
-      run: echo "FTP_USERNAME=${{ secrets.FTP_USERNAME_BACK }}"
+    - name: Print DATABASE_NAME
+      run: echo "FTP_USERNAME=${{ secrets.DATABASE_NAME }}"
       working-directory: ./backend
     
-    - name: Print FTP_PASSWORD
-      run: echo "FTP_PASSWORD=${{ secrets.FTP_PASSWORD_BACK }}"
+    - name: Print DATABASE_HOST
+      run: echo "FTP_PASSWORD=${{ secrets.DATABASE_HOST }}"
+      working-directory: ./backend
+
+    - name: Print DATABASE_PORT
+      run: echo "FTP_PASSWORD=${{ secrets.DATABASE_PORT }}"
       working-directory: ./backend
 
     - name: Create .env file
