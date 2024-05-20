@@ -58,8 +58,11 @@ jobs:
       run: echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}"
       working-directory: ./backend
     
-    - name: Print FTP_USERNAME, FTP_PASSWORD
+    - name: Print FTP_USERNAME
       run: echo "FTP_USERNAME=${{ secrets.FTP_USERNAME_BACK }}"
+      working-directory: ./backend
+    
+    - name: Print FTP_PASSWORD
       run: echo "FTP_PASSWORD=${{ secrets.FTP_PASSWORD_BACK }}"
       working-directory: ./backend
 
