@@ -46,10 +46,8 @@ jobs:
       with:
         php-version: '8.3'  # Spécifiez ici la version de PHP que vous utilisez
 
-    - name: Check Secret Availability FIRST
+    - name: Check Secret Availability first
       run: echo "Database URL from Secret: ${{ secrets.DATABASE_URL }}"
-      run: echo "JWT Passphrase from Secret: ${{ secrets.JWT_PASSPHRASE }}"
-      run: echo "App Secret from Secret: ${{ secrets.APP_SECRET }}"
 
     - name: Create .env file
       run: |
@@ -61,10 +59,8 @@ jobs:
         echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> ./backend/.env
         echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> ./backend/.env
 
-    - name: Check Secret Availability SECOND
+    - name: Check Secret Availability second
       run: echo "Database URL from Secret: ${{ secrets.DATABASE_URL }}"
-      run: echo "JWT Passphrase from Secret: ${{ secrets.JWT_PASSPHRASE }}"
-      run: echo "App Secret from Secret: ${{ secrets.APP_SECRET }}"
 
 
     - name: Check database connection
