@@ -45,10 +45,6 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.3'  # Spécifiez ici la version de PHP que vous utilisez
-
-    - name: Print DATABASE_URL first
-      run: echo "DATABASE_URL=${{ env.DATABASE_URL }}"
-      working-directory: ./backend
     
     - name: Print DATABASE_USER
       run: echo "APP_SECRET=${{ secrets.DATABASE_USER }}"
@@ -69,24 +65,25 @@ jobs:
     - name: Print DATABASE_PORT
       run: echo "FTP_PASSWORD=${{ secrets.DATABASE_PORT }}"
       working-directory: ./backend
+    
+    - name: Create DATABASE_URL
+      run: |
+        echo "DATABASE_URL=mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}" >> $GITHUB_ENV
+      working-directory: ./backend
 
     - name: Create .env file
       run: |
         echo "APP_ENV=dev" > ./backend/.env
         echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> ./backend/.env
-        echo "DATABASE_URL='${{ secrets.DATABASE_URL }}'" >> ./backend/.env
+        echo "DATABASE_URL=$DATABASE_URL" >> ./backend/.env
         echo "CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'" >> ./backend/.env
         echo "JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem" >> ./backend/.env
         echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> ./backend/.env
         echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> ./backend/.env
 
-    - name: Print DATABASE_URL second
-      run: echo "DATABASE_URL=${{ env.DATABASE_URL }}"
-      working-directory: ./backend
 
-
-    - name: Check database connection
-      run: php -r "new PDO(getenv('DATABASE_URL')); echo 'Database connection successful.';"
+    - name: Print DATABASE_URL
+      run: echo "DATABASE_URL=$DATABASE_URL"
       working-directory: ./backend
 
     - name: Install Composer dependencies
