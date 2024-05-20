@@ -46,6 +46,11 @@ jobs:
       with:
         php-version: '8.3'  # Spécifiez ici la version de PHP que vous utilisez
 
+    - name: Check Secret Availability FIRST
+      run: echo "Database URL from Secret: ${{ secrets.DATABASE_URL }}"
+      run: echo "JWT Passphrase from Secret: ${{ secrets.JWT_PASSPHRASE }}"
+      run: echo "App Secret from Secret: ${{ secrets.APP_SECRET }}"
+
     - name: Create .env file
       run: |
         echo "APP_ENV=dev" > ./backend/.env
@@ -56,9 +61,12 @@ jobs:
         echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> ./backend/.env
         echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> ./backend/.env
 
-    - name: Print DATABASE_URL
-      run: echo "DATABASE_URL=${{ env.DATABASE_URL }}"
-      working-directory: ./backend
+    - name: Check Secret Availability SECOND
+      run: echo "Database URL from Secret: ${{ secrets.DATABASE_URL }}"
+      run: echo "JWT Passphrase from Secret: ${{ secrets.JWT_PASSPHRASE }}"
+      run: echo "App Secret from Secret: ${{ secrets.APP_SECRET }}"
+
+
     - name: Check database connection
       run: php -r "new PDO(getenv('DATABASE_URL')); echo 'Database connection successful.';"
       working-directory: ./backend
