@@ -45,27 +45,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.3'  # Spécifiez ici la version de PHP que vous utilisez
-    
-    - name: Print DATABASE_USER
-      run: echo "APP_SECRET=${{ secrets.DATABASE_USER }}"
-      working-directory: ./backend
 
-    - name: Print DATABASE_PASSWORD
-      run: echo "JWT_PASSPHRASE=${{ secrets.DATABASE_PASSWORD }}"
-      working-directory: ./backend
-    
-    - name: Print DATABASE_NAME
-      run: echo "FTP_USERNAME=${{ secrets.DATABASE_NAME }}"
-      working-directory: ./backend
-    
-    - name: Print DATABASE_HOST
-      run: echo "FTP_PASSWORD=${{ secrets.DATABASE_HOST }}"
-      working-directory: ./backend
-
-    - name: Print DATABASE_PORT
-      run: echo "FTP_PASSWORD=${{ secrets.DATABASE_PORT }}"
-      working-directory: ./backend
-    
     - name: Create DATABASE_URL
       run: |
         echo "DATABASE_URL=mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}" >> $GITHUB_ENV
@@ -81,11 +61,6 @@ jobs:
         echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> ./backend/.env
         echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> ./backend/.env
 
-
-    - name: Print DATABASE_URL
-      run: echo "DATABASE_URL=$DATABASE_URL"
-      working-directory: ./backend
-
     - name: Install Composer dependencies
       run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
       working-directory: ./backend  # Remplacez par le chemin vers votre dossier backend
@@ -97,6 +72,14 @@ jobs:
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
           ${{ runner.os }}-composer-
+
+    - name: List backend directory
+      run: ls -la ./backend/
+      working-directory: ./
+
+    - name: Set execute permission for console
+      run: chmod +x ./backend/bin/console
+      working-directory: ./
 
     - name: Check Symfony requirements
       run: php ./backend/bin/console about
