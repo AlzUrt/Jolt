@@ -56,6 +56,9 @@ jobs:
         echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> ./backend/.env
         echo "JWT_PASSPHRASE=<JWT_PASSPHRASE>" >> ./backend/.env
 
+    - name: Print DATABASE_URL
+      run: echo "DATABASE_URL=${{ env.DATABASE_URL }}"
+      working-directory: ./backend
     - name: Check database connection
       run: php -r "new PDO(getenv('DATABASE_URL')); echo 'Database connection successful.';"
       working-directory: ./backend
