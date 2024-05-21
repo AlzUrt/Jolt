@@ -81,12 +81,8 @@ jobs:
       run: php bin/console about
       working-directory: ./backend
 
-    - name: Deploy to Server AlwaysData via SFTP
-      uses: easingthemes/ssh-deploy@v2.1.5
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        SOURCE: "./backend/"
-        REMOTE_HOST: ${{ secrets.ALWAYSDATA_SFTP_HOST }}
-        REMOTE_USER: ${{ secrets.ALWAYSDATA_USERNAME }}
-        REMOTE_PORT: '22'
-        TARGET: "/www/backend/"
+    - name: Deploy to server via SSH
+      run: |
+        scp -r ./backend ${{ secrets.SSH_USER }}@ssh-chabertamaury.alwaysdata.net:/path/to/deploy
+        ssh ${{ secrets.SSH_USER }}@ssh-chabertamaury.alwaysdata.net "cd /path/to/deploy/backend && bin/console doctrine:migrations:migrate"
+      working-directory: ./
