@@ -83,6 +83,6 @@ jobs:
 
     - name: Deploy to server via SSH
       run: |
-        scp -r ./backend ${{ secrets.SSH_USER }}@ssh-chabertamaury.alwaysdata.net:/path/to/deploy
-        ssh ${{ secrets.SSH_USER }}@ssh-chabertamaury.alwaysdata.net "cd /path/to/deploy/backend && bin/console doctrine:migrations:migrate"
+        scp -r ./backend ${{ secrets.SSH_USER }}@ssh-chabertamaury.alwaysdata.net:/home/chabertamaury/www/backend
+        ssh ${{ secrets.SSH_USER }}@ssh-chabertamaury.alwaysdata.net "cd /home/chabertamaury/www/backend && composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader"
       working-directory: ./
