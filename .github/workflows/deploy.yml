@@ -44,7 +44,12 @@ jobs:
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.3'
+        php-version: '8.3'  # Spécifiez ici la version de PHP que vous utilisez
+
+    - name: Create DATABASE_URL
+      run: |
+        echo "DATABASE_URL=mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}" >> $GITHUB_ENV
+      working-directory: ./backend
 
     - name: Create .env file
       run: |
@@ -58,7 +63,7 @@ jobs:
 
     - name: Install Composer dependencies
       run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
-      working-directory: ./backend
+      working-directory: ./backend  # Remplacez par le chemin vers votre dossier backend
 
     - name: Cache Composer packages
       uses: actions/cache@v2
@@ -70,10 +75,6 @@ jobs:
 
     - name: List backend directory
       run: ls -la ./backend/
-      working-directory: ./
-
-    - name: List bin directory
-      run: ls -la ./backend/bin/
       working-directory: ./
 
     - name: Set execute permission for console
