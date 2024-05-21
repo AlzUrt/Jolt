@@ -44,37 +44,18 @@ jobs:
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.3'  # Spécifiez ici la version de PHP que vous utilisez
-
-    - name: Create DATABASE_URL
-      run: |
-        echo "DATABASE_URL=mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}" >> $GITHUB_ENV
-      working-directory: ./backend
-
-    - name: Create .env file
-      run: |
-        echo "APP_ENV=dev" > ./backend/.env
-        echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> ./backend/.env
-        echo "DATABASE_URL=$DATABASE_URL" >> ./backend/.env
-        echo "CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'" >> ./backend/.env
-        echo "JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem" >> ./backend/.env
-        echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> ./backend/.env
-        echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> ./backend/.env
+        php-version: '8.3'
 
     - name: Install Composer dependencies
       run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
-      working-directory: ./backend  # Remplacez par le chemin vers votre dossier backend
-
-    - name: Cache Composer packages
-      uses: actions/cache@v2
-      with:
-        path: ${{ github.workspace }}/backend/vendor
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-
+      working-directory: ./backend
 
     - name: List backend directory
       run: ls -la ./backend/
+      working-directory: ./
+
+    - name: List bin directory
+      run: ls -la ./backend/bin/
       working-directory: ./
 
     - name: Set execute permission for console
@@ -83,7 +64,7 @@ jobs:
 
     - name: Check Symfony requirements
       run: php ./backend/bin/console about
-      working-directory: ./backend 
+      working-directory: ./backend
 
     - name: Deploy to Hostinger via FTP
       uses: SamKirkland/FTP-Deploy-Action@4.1.0
