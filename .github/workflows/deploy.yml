@@ -81,6 +81,10 @@ jobs:
       run: chmod +x ./backend/bin/console
       working-directory: ./
 
+    - name: List bin directory
+      run: ls -la ./backend/bin/
+      working-directory: ./
+
     - name: Check Symfony requirements
       run: php ./backend/bin/console about
       working-directory: ./backend
