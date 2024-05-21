@@ -81,12 +81,12 @@ jobs:
       run: php bin/console about
       working-directory: ./backend
 
-    - name: Deploy to AlwaysData via SFTP
+    - name: Deploy to Server AlwaysData via SCP
       uses: appleboy/scp-action@master
       with:
         host: ssh-chabertamaury.alwaysdata.net
         username: chabertamaury
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        password: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
-        source: "./backend/"
+        source: "backend/"
         target: "/home/chabertamaury/www/backend/"
