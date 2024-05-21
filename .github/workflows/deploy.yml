@@ -85,8 +85,12 @@ jobs:
       run: ls -la ./backend/bin/
       working-directory: ./
 
+    - name: Print PHP version
+      run: php -v
+      working-directory: ./backend
+
     - name: Check Symfony requirements
-      run: php ./backend/bin/console about
+      run: php bin/console about
       working-directory: ./backend
 
     - name: Deploy to Hostinger via FTP
