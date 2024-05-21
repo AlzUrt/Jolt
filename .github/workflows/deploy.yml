@@ -73,31 +73,20 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-composer-
 
-    - name: List backend directory
-      run: ls -la ./backend/
-      working-directory: ./
-
     - name: Set execute permission for console
       run: chmod +x ./backend/bin/console
       working-directory: ./
-
-    - name: List bin directory
-      run: ls -la ./backend/bin/
-      working-directory: ./
-
-    - name: Print PHP version
-      run: php -v
-      working-directory: ./backend
 
     - name: Check Symfony requirements
       run: php bin/console about
       working-directory: ./backend
 
-    - name: Deploy to Hostinger via FTP
-      uses: SamKirkland/FTP-Deploy-Action@4.1.0
+    - name: Deploy to AlwaysData via SFTP
+      uses: appleboy/scp-action@master
       with:
-        server: chabertamaury.alwaysdata.net
-        username: ${{ secrets.FTP_USERNAME_BACK }}
-        password: ${{ secrets.FTP_PASSWORD_BACK }}
-        local-dir: ./backend/
-        server-dir: /home/chabertamaury/www/backend/
+        host: ssh-chabertamaury.alwaysdata.net
+        username: chabertamaury
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./backend/"
+        target: "/home/chabertamaury/www/backend/"
