@@ -44,15 +44,11 @@ jobs:
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.3'  # Spécifiez ici la version de PHP que vous utilisez
+        php-version: '8.3'
 
-    - name: Create DATABASE_URL
+    - name: Create DATABASE_URL and .env file
       run: |
         echo "DATABASE_URL=mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}" >> $GITHUB_ENV
-      working-directory: ./backend
-
-    - name: Create .env file
-      run: |
         echo "APP_ENV=dev" > ./backend/.env
         echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> ./backend/.env
         echo "DATABASE_URL=$DATABASE_URL" >> ./backend/.env
@@ -60,10 +56,11 @@ jobs:
         echo "JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem" >> ./backend/.env
         echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> ./backend/.env
         echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> ./backend/.env
+      working-directory: ./backend
 
     - name: Install Composer dependencies
-      run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
-      working-directory: ./backend  # Remplacez par le chemin vers votre dossier backend
+      run: composer self-update --2 && composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+      working-directory: ./backend
 
     - name: Cache Composer packages
       uses: actions/cache@v2
@@ -75,7 +72,7 @@ jobs:
 
     - name: Set execute permission for console
       run: chmod +x ./backend/bin/console
-      working-directory: ./
+      working-directory: ./backend
 
     - name: Check Symfony requirements
       run: php bin/console about
