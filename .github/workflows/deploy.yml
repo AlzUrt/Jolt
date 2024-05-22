@@ -89,12 +89,15 @@ jobs:
         ssh-keyscan -H ssh-chabertamaury.alwaysdata.net >> ~/.ssh/known_hosts
         chmod 644 ~/.ssh/known_hosts
 
-    - name: Ensure correct PHP version and Composer
+    - name: Upgrade PHP and Composer
       run: |
-        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "php -v; composer self-update --2"
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "php -v"
+        
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "curl -sS https://getcomposer.org/installer | php -- --install-dir=bin --filename=composer"
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "./bin/composer self-update --2"
 
     - name: Deploy to server via SSH
       run: |
         scp -o StrictHostKeyChecking=no -r ./backend/* chabertamaury@ssh-chabertamaury.alwaysdata.net:/home/chabertamaury/www/backend
-        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "cd /home/chabertamaury/www/backend && php -v && composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader"
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "cd /home/chabertamaury/www/backend && ./bin/composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader"
       working-directory: ./
