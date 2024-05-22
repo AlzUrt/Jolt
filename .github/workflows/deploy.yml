@@ -1,4 +1,4 @@
-name: Deploy React App
+name: Deploy React App and PHP Backend
 
 on:
   push:
@@ -34,6 +34,7 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./frontend/build/
         server-dir: /public_html/
+
   backend:
     runs-on: ubuntu-latest
 
@@ -89,13 +90,20 @@ jobs:
         ssh-keyscan -H ssh-chabertamaury.alwaysdata.net >> ~/.ssh/known_hosts
         chmod 644 ~/.ssh/known_hosts
 
-    - name: Install and Verify Composer
-      run: |
-        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "mkdir -p /home/chabertamaury/bin && curl -sS https://getcomposer.org/installer | php -- --install-dir=/home/chabertamaury/bin --filename=composer"
-        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "chmod +x /home/chabertamaury/bin/composer && /home/chabertamaury/bin/composer --version"
-
-    - name: Deploy to server via SSH
-      run: |
-        scp -o StrictHostKeyChecking=no -r ./backend/* chabertamaury@ssh-chabertamaury.alwaysdata.net:/home/chabertamaury/www/backend
-        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "/home/chabertamaury/bin/composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader -d /home/chabertamaury/www/backend"
+    - name: Deploy backend files to server via SSH
+      run: scp -o StrictHostKeyChecking=no -r ./backend/* chabertamaury@ssh-chabertamaury.alwaysdata.net:/home/chabertamaury/www/backend
       working-directory: ./
+
+    - name: Create .env file on server
+      run: |
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "echo 'APP_ENV=dev' > /home/chabertamaury/www/backend/.env && \
+        echo 'APP_SECRET=${{ secrets.APP_SECRET }}' >> /home/chabertamaury/www/backend/.env && \
+        echo 'DATABASE_URL=$DATABASE_URL' >> /home/chabertamaury/www/backend/.env && \
+        echo 'CORS_ALLOW_ORIGIN=^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$' >> /home/chabertamaury/www/backend/.env && \
+        echo 'JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem' >> /home/chabertamaury/www/backend/.env && \
+        echo 'JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem' >> /home/chabertamaury/www/backend/.env && \
+        echo 'JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}' >> /home/chabertamaury/www/backend/.env"
+
+    - name: Install and Verify Composer on server
+      run: |
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "/home/chabertamaury/bin/composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader -d /home/chabertamaury/www/backend"
