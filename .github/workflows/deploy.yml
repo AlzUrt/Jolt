@@ -91,11 +91,11 @@ jobs:
 
     - name: Install and Verify Composer
       run: |
-        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "mkdir -p ~/bin && curl -sS https://getcomposer.org/installer | php -- --install-dir=~/bin --filename=composer"
-        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "chmod +x ~/bin/composer && ~/bin/composer --version"
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "mkdir -p /home/chabertamaury/bin && curl -sS https://getcomposer.org/installer | php -- --install-dir=/home/chabertamaury/bin --filename=composer"
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "chmod +x /home/chabertamaury/bin/composer && /home/chabertamaury/bin/composer --version"
 
     - name: Deploy to server via SSH
       run: |
         scp -o StrictHostKeyChecking=no -r ./backend/* chabertamaury@ssh-chabertamaury.alwaysdata.net:/home/chabertamaury/www/backend
-        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "~/bin/composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader -d /home/chabertamaury/www/backend"
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "/home/chabertamaury/bin/composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader -d /home/chabertamaury/www/backend"
       working-directory: ./
