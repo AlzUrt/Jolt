@@ -16,15 +16,15 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '14'  # Vous pouvez spécifier la version de Node.js que vous utilisez
+        node-version: '14'
 
     - name: Install dependencies
       run: npm install
-      working-directory: ./frontend  # Remplacer par le chemin vers votre dossier frontend
+      working-directory: ./frontend
 
     - name: Build React app
       run: npm run build
-      working-directory: ./frontend  # Remplacer par le chemin vers votre dossier frontend
+      working-directory: ./frontend
 
     - name: Deploy to Hostinger via FTP
       uses: SamKirkland/FTP-Deploy-Action@4.1.0
@@ -46,9 +46,13 @@ jobs:
       with:
         php-version: '8.3'
 
-    - name: Create DATABASE_URL and .env file
+    - name: Create DATABASE_URL
       run: |
         echo "DATABASE_URL=mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}" >> $GITHUB_ENV
+      working-directory: ./backend
+
+    - name: Create .env file
+      run: |
         echo "APP_ENV=dev" > ./backend/.env
         echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> ./backend/.env
         echo "DATABASE_URL=$DATABASE_URL" >> ./backend/.env
@@ -56,10 +60,9 @@ jobs:
         echo "JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem" >> ./backend/.env
         echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> ./backend/.env
         echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> ./backend/.env
-      working-directory: ./backend
 
     - name: Install Composer dependencies
-      run: composer self-update --2 && composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+      run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
       working-directory: ./backend
 
     - name: Cache Composer packages
@@ -72,7 +75,7 @@ jobs:
 
     - name: Set execute permission for console
       run: chmod +x ./backend/bin/console
-      working-directory: ./backend
+      working-directory: ./
 
     - name: Check Symfony requirements
       run: php bin/console about
