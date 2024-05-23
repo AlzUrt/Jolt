@@ -110,7 +110,9 @@ jobs:
     
     - name: Generate JWT Private and Public Keys
       run: |
-        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "openssl genrsa -out /home/chabertamaury/www/backend/config/jwt/private.pem 2048 && \
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "\
+        mkdir -p /home/chabertamaury/www/backend/config/jwt && \
+        openssl genrsa -out /home/chabertamaury/www/backend/config/jwt/private.pem 2048 && \
         openssl rsa -in /home/chabertamaury/www/backend/config/jwt/private.pem -pubout -out /home/chabertamaury/www/backend/config/jwt/public.pem"
     
     - name: Set permissions for JWT keys
