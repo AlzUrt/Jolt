@@ -9,14 +9,6 @@ doctrine:
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: true
 
-        # Ajoutez cette section "event_manager" pour enregistrer la valeur de DATABASE_URL
-        event_manager:
-            subscribers:
-                doctrine.debug_logger:
-                    class: Doctrine\DBAL\Logging\DebugStack
-                    public: false
-                    tags:
-                        - { name: doctrine.dbal.logging }
 
         # Ajoutez cette section "connection" pour enregistrer la valeur de DATABASE_URL
         connection:
