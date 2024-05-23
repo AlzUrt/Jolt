@@ -119,3 +119,7 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "chmod 644 /home/chabertamaury/www/backend/config/jwt/public.pem && \
         chmod 600 /home/chabertamaury/www/backend/config/jwt/private.pem"
+
+    - name: Create doctrine.yaml file on server
+      run: |
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "echo '${{ secrets.DOCTRINE_CONFIG }}' > /home/chabertamaury/www/backend/config/packages/doctrine.yaml"
