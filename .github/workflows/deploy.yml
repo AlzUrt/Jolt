@@ -90,8 +90,8 @@ jobs:
         ssh-keyscan -H ssh-chabertamaury.alwaysdata.net >> ~/.ssh/known_hosts
         chmod 644 ~/.ssh/known_hosts
 
-    - name: Deploy backend files to server via SSH
-      run: scp -o StrictHostKeyChecking=no -r ./backend/* chabertamaury@ssh-chabertamaury.alwaysdata.net:/home/chabertamaury/www/backend
+    - name: Deploy backend files to server via rsync
+      run: rsync -avz --exclude '.env' --delete --exclude 'vendor/' --exclude 'var/' -e "ssh -o StrictHostKeyChecking=no" ./backend/ chabertamaury@ssh-chabertamaury.alwaysdata.net:/home/chabertamaury/www/backend/
       working-directory: ./
 
     - name: Create .env file on server
@@ -107,3 +107,13 @@ jobs:
     - name: Install and Verify Composer on server
       run: |
         ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "/home/chabertamaury/bin/composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader -d /home/chabertamaury/www/backend"
+    
+    - name: Generate JWT Private and Public Keys
+      run: |
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "openssl genrsa -out /home/chabertamaury/www/backend/config/jwt/private.pem 2048 && \
+        openssl rsa -in /home/chabertamaury/www/backend/config/jwt/private.pem -pubout -out /home/chabertamaury/www/backend/config/jwt/public.pem"
+    
+    - name: Set permissions for JWT keys
+      run: |
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "chmod 644 /home/chabertamaury/www/backend/config/jwt/public.pem && \
+        chmod 600 /home/chabertamaury/www/backend/config/jwt/private.pem"
