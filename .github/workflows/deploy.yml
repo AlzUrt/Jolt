@@ -102,7 +102,7 @@ jobs:
         echo 'CORS_ALLOW_ORIGIN=^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$' >> /home/chabertamaury/www/backend/.env && \
         echo 'JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem' >> /home/chabertamaury/www/backend/.env && \
         echo 'JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem' >> /home/chabertamaury/www/backend/.env && \
-        echo 'JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}' >> /home/chabertamaury/www/backend/.env"
+        echo 'JWT_TOKEN=${{ secrets.JWT_PASSPHRASE }}' >> /home/chabertamaury/www/backend/.env"
 
     - name: Install and Verify Composer on server
       run: |
