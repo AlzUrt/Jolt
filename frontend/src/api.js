@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Création de l'instance API avec les paramètres de base
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000/api',
   headers: {
     'Content-Type': 'application/ld+json'
   }

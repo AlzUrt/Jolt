@@ -25,6 +25,8 @@ jobs:
     - name: Build React app
       run: npm run build
       working-directory: ./frontend
+      env:
+        NODE_ENV: 'production'
 
     - name: Deploy to Hostinger via FTP
       uses: SamKirkland/FTP-Deploy-Action@4.1.0
