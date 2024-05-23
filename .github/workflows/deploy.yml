@@ -49,7 +49,7 @@ jobs:
 
     - name: Create DATABASE_URL
       run: |
-        echo "DATABASE_URL=\"mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}\"" >> $GITHUB_ENV
+        echo "DATABASE_URL=mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}" >> $GITHUB_ENV
       working-directory: ./backend
 
     - name: Create .env file
@@ -98,7 +98,7 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "echo 'APP_ENV=dev' > /home/chabertamaury/www/backend/.env && \
         echo 'APP_SECRET=${{ secrets.APP_SECRET }}' >> /home/chabertamaury/www/backend/.env && \
-        echo 'DATABASE_URL=$DATABASE_URL' >> /home/chabertamaury/www/backend/.env && \
+        echo 'DATABASE_URL=\"mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}\"' >> /home/chabertamaury/www/backend/.env && \
         echo 'CORS_ALLOW_ORIGIN=^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$' >> /home/chabertamaury/www/backend/.env && \
         echo 'JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem' >> /home/chabertamaury/www/backend/.env && \
         echo 'JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem' >> /home/chabertamaury/www/backend/.env && \
