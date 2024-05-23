@@ -49,7 +49,7 @@ jobs:
 
     - name: Create DATABASE_URL
       run: |
-        echo "DATABASE_URL=mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}" >> $GITHUB_ENV
+        echo "DATABASE_URL=\"mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}\"" >> $GITHUB_ENV
       working-directory: ./backend
 
     - name: Create .env file
