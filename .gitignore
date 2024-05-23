@@ -22,7 +22,6 @@
 
 # Divers
 /.phpunit.result.cache
-/.htaccess
 /phpunit.xml.dist
 /.php_cs.cache
 /.php_cs.dist
