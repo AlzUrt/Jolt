@@ -44,20 +44,6 @@ doctrine:
         controller_resolver:
             auto_mapping: true
 
-logging:
-    channels: ["doctrine"]
-    handlers:
-        main:
-            type: stream
-            path: "%kernel.logs_dir%/%kernel.environment%.log"
-            level: debug
-            channels: ["!doctrine"]
-        doctrine:
-            type: stream
-            path: "%kernel.logs_dir%/doctrine.log"
-            level: debug
-            channels: ["doctrine"]
-
 when@test:
     doctrine:
         dbal:
