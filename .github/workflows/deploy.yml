@@ -122,4 +122,4 @@ jobs:
 
     - name: Create doctrine.yaml file on server
       run: |
-        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "echo '${{ secrets.DOCTRINE_CONFIG }}' > /home/chabertamaury/www/backend/config/packages/doctrine.yaml"
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "echo '${{ secrets.DOCTRINE_CONFIG }}' | base64 --decode > /home/chabertamaury/www/backend/config/packages/doctrine.yaml"
