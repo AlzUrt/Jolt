@@ -67,7 +67,7 @@ jobs:
 
     - name: Set execute permission for console
       run: chmod +x ./backend/bin/console
-      working-directory: ./backend
+      working-directory: ./
 
     - name: Check Symfony requirements
       run: php bin/console about
