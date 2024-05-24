@@ -34,7 +34,7 @@ jobs:
 
     - name: Create DATABASE_URL
       run: |
-        echo "DATABASE_URL=mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/\${{ secrets.DATABASE_NAME }}" >> $GITHUB_ENV
+        echo "DATABASE_URL=mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}" >> $GITHUB_ENV
       working-directory: ./backend
 
     - name: Create .env file
@@ -57,7 +57,7 @@ jobs:
         path: ${{ github.workspace }}/backend/vendor
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
-          \${{ runner.os }}-composer-
+          ${{ runner.os }}-composer-
 
     - name: Set execute permission for console
       run: chmod +x ./backend/bin/console
@@ -73,15 +73,12 @@ jobs:
         # Add your backend build command here
         # For example, if you're using Symfony, you might run `php bin/console cache:clear --env=prod` and `php bin/console assets:install --env=prod`
 
+    - name: Set build status
+      id: set-status
+      run: |
+        echo "::set-output name=frontend_status::${{ steps.build-frontend.outcome }}"
+        echo "::set-output name=backend_status::${{ steps.build-backend.outcome }}"
+
   deploy:
     needs: build
-    if: \${{ needs.build.outcome == 'success' && steps.build-frontend.outcome == 'success' && steps.build-backend.outcome == 'success' }}
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Deploy to Hostinger via FTP
-      uses: SamKirkland/FTP-Deploy-Action@4.1.0
-      with:
-        server: 213.130.145.28
-        username: \${{ secrets.FTP_USERNAME }}
-   
+    if: ${{ needs.build.outcome == 'success' && fromJSON(needs.build.outputs.set-status)'
