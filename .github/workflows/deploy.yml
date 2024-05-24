@@ -26,15 +26,6 @@ jobs:
       run: npm run build
       working-directory: ./frontend
 
-    - name: Deploy to Hostinger via FTP
-      uses: SamKirkland/FTP-Deploy-Action@4.1.0
-      with:
-        server: 213.130.145.28
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./frontend/build/
-        server-dir: /public_html/
-
   backend:
     runs-on: ubuntu-latest
 
@@ -82,6 +73,22 @@ jobs:
       run: php bin/console about
       working-directory: ./backend
 
+  deploy:
+    needs: [frontend, backend]  # Ce job s'exécute seulement si frontend et backend ont réussi
+    runs-on: ubuntu-latest
+
+    steps:
+      # FRONTEND DEPLOYMENT
+      - name: Deploy to Hostinger via FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        with:
+          server: 213.130.145.28
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./frontend/build/
+          server-dir: /public_html/
+
+    # BACKEND DEPLOYMENT
     - name: Set up SSH key
       run: |
         mkdir -p ~/.ssh
