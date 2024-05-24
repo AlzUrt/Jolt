@@ -20,7 +20,7 @@ const PrivateRoute = ({ children }) => {
           if (decodedToken.exp > currentTime) {
             try {
               // Utilisez l'instance 'api' qui inclut déjà le bon en-tête d'autorisation
-              await api.get('/');
+              await api.get('/verify_token');
               setIsAuthenticated(true);
             } catch (error) {
               console.error('Token validation error:', error);

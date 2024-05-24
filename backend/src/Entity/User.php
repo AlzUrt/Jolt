@@ -10,15 +10,24 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Get;
 use App\Controller\AuthController;
 use App\Controller\RegisterController;
-use App\Controller\TokenValidationController;
+use App\Dto\VerifyTokenDto;
 use App\Repository\UserRepository;
+use App\State\VerifyTokenProvider;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ApiResource(
     operations: [
-        new Get(),
+        new Get(
+            uriTemplate: '/verify_token',
+            provider: VerifyTokenProvider::class,
+            output: VerifyTokenDto::class,
+            openapiContext: [
+                'summary' => 'Get all users',
+                'description' => 'Get all users.',
+            ]
+        ),
         new Post(),
         new Get(uriTemplate: '/users/{id}'),
         new Put(),
@@ -70,7 +79,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
                     ],
                 ],
             ]
-        ),
+        )
     ]
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
