@@ -6,7 +6,7 @@ on:
       - main  # Déclenche le workflow sur les pushs vers la branche main
 
 jobs:
-  build:
+  frontend:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,9 +23,24 @@ jobs:
       working-directory: ./frontend
 
     - name: Build React app
-      id: build-frontend
       run: npm run build
       working-directory: ./frontend
+
+    - name: Deploy to Hostinger via FTP
+      uses: SamKirkland/FTP-Deploy-Action@4.1.0
+      with:
+        server: 213.130.145.28
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./frontend/build/
+        server-dir: /public_html/
+
+  backend:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
@@ -67,18 +82,44 @@ jobs:
       run: php bin/console about
       working-directory: ./backend
 
-    - name: Build backend
-      id: build-backend
+    - name: Set up SSH key
       run: |
-        # Add your backend build command here
-        # For example, if you're using Symfony, you might run `php bin/console cache:clear --env=prod` and `php bin/console assets:install --env=prod`
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ssh-chabertamaury.alwaysdata.net >> ~/.ssh/known_hosts
+        chmod 644 ~/.ssh/known_hosts
 
-    - name: Set build status
-      id: set-status
+    - name: Deploy backend files to server via rsync
+      run: rsync -avz --exclude '.env' --delete --exclude 'vendor/' --exclude 'var/' -e "ssh -o StrictHostKeyChecking=no" ./backend/ chabertamaury@ssh-chabertamaury.alwaysdata.net:/home/chabertamaury/www/backend/
+      working-directory: ./
+
+    - name: Create .env file on server
       run: |
-        echo "::set-output name=frontend_status::${{ steps.build-frontend.outcome }}"
-        echo "::set-output name=backend_status::${{ steps.build-backend.outcome }}"
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "echo 'APP_ENV=dev' > /home/chabertamaury/www/backend/.env && \
+        echo 'APP_SECRET=${{ secrets.APP_SECRET }}' >> /home/chabertamaury/www/backend/.env && \
+        echo 'DATABASE_URL=\"mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}\"' >> /home/chabertamaury/www/backend/.env && \
+        echo 'CORS_ALLOW_ORIGIN=^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$' >> /home/chabertamaury/www/backend/.env && \
+        echo 'JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem' >> /home/chabertamaury/www/backend/.env && \
+        echo 'JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem' >> /home/chabertamaury/www/backend/.env && \
+        echo 'JWT_TOKEN=${{ secrets.JWT_PASSPHRASE }}' >> /home/chabertamaury/www/backend/.env"
 
-  deploy:
-    needs: build
-    if: ${{ needs.build.outcome == 'success' && fromJSON(needs.build.outputs.set-status)'
+    - name: Install and Verify Composer on server
+      run: |
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "/home/chabertamaury/bin/composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader -d /home/chabertamaury/www/backend"
+    
+    - name: Generate JWT Private and Public Keys
+      run: |
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "\
+        mkdir -p /home/chabertamaury/www/backend/config/jwt && \
+        openssl genrsa -out /home/chabertamaury/www/backend/config/jwt/private.pem 2048 && \
+        openssl rsa -in /home/chabertamaury/www/backend/config/jwt/private.pem -pubout -out /home/chabertamaury/www/backend/config/jwt/public.pem"
+    
+    - name: Set permissions for JWT keys
+      run: |
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "chmod 644 /home/chabertamaury/www/backend/config/jwt/public.pem && \
+        chmod 600 /home/chabertamaury/www/backend/config/jwt/private.pem"
+
+    - name: Create doctrine.yaml file on server
+      run: |
+        ssh -o StrictHostKeyChecking=no chabertamaury@ssh-chabertamaury.alwaysdata.net "echo '${{ secrets.ENCODED_DOCTRINE_YAML }}' | base64 --decode > /home/chabertamaury/www/backend/config/packages/doctrine.yaml"
