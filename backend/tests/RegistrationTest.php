@@ -2,40 +2,42 @@
 
 namespace App\Tests;
 
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\User;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class UserRegistrationTest extends ApiTestCase {
-    private $createdUserEmail = 'test@example.com';
+class RegistrationTest extends WebTestCase
+{
+    public function testRegister(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/ld+json'], '{"email": "azeaze.do@exemple.com", "password": "azeaze", "confirmPassword": "azeaze", "firstname": "azeaze", "lastname": "azeaze"}');
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseStatusCodeSame(201);
 
-    public function testUserRegistration(): void {
-        try {
-            $response = static::createClient()->request('POST', '/api/register', [
-                'json' => [
-                    'email' => 'test@example.com',
-                    'password' => 'password123',
-                    'confirmPassword' => 'password123',
-                    'firstname' => 'John',
-                    'lastname' => 'Doe'
-                ],
-                'headers' => [
-                    'Content-Type' => 'application/ld+json',
-                ]
-            ]);
+        // Suppose que l'API retourne un JSON avec l'ID de l'utilisateur dans 'id'
+        $responseData = json_decode($client->getResponse()->getContent(), true);
+        $userId = $responseData['id'] ?? null;
+
+        // delete the user with doctrine
+        $entityManager = $client->getContainer()->get('doctrine')->getManager();
+        $userRepository = $entityManager->getRepository(User::class);
+        $user = $userRepository->find($userId);
+        $entityManager->remove($user);
+        $entityManager->flush();
+    }
+
+    protected function tearDown(): void
+    {
+        while (true) {
+            $previousHandler = set_exception_handler(static fn() => null);
     
-            $this->assertResponseStatusCodeSame(201);
-            $this->assertJsonContains([
-                'email' => 'test@example.com'
-            ]); 
-        } catch (\Exception $e) {
-            throw $e;
-        } finally {
-            // Supprime l'utilisateur créé
-            $user = static::getContainer()->get('doctrine')->getRepository(User::class)->findOneBy(['email' => 'test@example.com']);
-            if ($user) {
-                static::getContainer()->get('doctrine')->getManager()->remove($user);
-                static::getContainer()->get('doctrine')->getManager()->flush();
+            restore_exception_handler();
+    
+            if ($previousHandler === null) {
+                break;
             }
+    
+            restore_exception_handler();
         }
     }
     

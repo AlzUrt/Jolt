@@ -31,7 +31,22 @@ use Symfony\Component\Security\Core\User\UserInterface;
         new Post(),
         new Get(uriTemplate: '/users/{id}'),
         new Put(),
-        new Delete(),
+        new Delete(
+            uriTemplate: '/users/{id}',
+            openapiContext: [
+                'summary' => 'Delete a user',
+                'description' => 'Delete a user by providing the user id.',
+                'parameters' => [
+                    [
+                        'name' => 'id',
+                        'in' => 'path',
+                        'required' => true,
+                        'type' => 'integer',
+                        'description' => 'The user id',
+                    ],
+                ],
+            ]
+        ),
         new Patch(),
         new Post(
             uriTemplate: '/register',
