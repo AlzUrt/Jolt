@@ -59,7 +59,13 @@ jobs:
         echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> ./backend/.env
 
     - name: Install Composer dependencies
-      run: composer install --verbose --no-progress --no-suggest --prefer-dist --optimize-autoloader
+      run: |
+        composer config --global -- disable-tls
+        composer install --no-dev --prefer-dist
+      working-directory: ./backend
+
+    - name: Clear Composer cache
+      run: composer clear-cache
       working-directory: ./backend
 
     - name: Cache Composer packages
