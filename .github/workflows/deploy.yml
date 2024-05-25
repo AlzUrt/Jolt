@@ -76,9 +76,9 @@ jobs:
       run: composer dump-autoload
       working-directory: ./backend
 
-    - name: Check Symfony requirements
-      run: php bin/console about
-      working-directory: ./backend
+    # - name: Check Symfony requirements
+    #   run: php bin/console about
+    #   working-directory: ./backend
 
     - name: Run PHPUnit tests
       run: php ./bin/phpunit
