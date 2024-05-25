@@ -13,7 +13,7 @@ class UserRegistrationTest extends ApiTestCase {
             $response = static::createClient()->request('POST', '/api/register', [
                 'json' => [
                     'email' => 'test@example.com',
-                    'password' => '',
+                    'password' => 'password123',
                     'confirmPassword' => 'password123',
                     'firstname' => 'John',
                     'lastname' => 'Doe'
