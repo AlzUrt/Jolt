@@ -62,6 +62,7 @@ jobs:
       run: |
         composer config --global -- disable-tls
         composer install --no-dev --prefer-dist
+        composer dump-autoload
       working-directory: ./backend
 
     - name: Clear Composer cache
