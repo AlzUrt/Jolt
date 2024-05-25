@@ -72,6 +72,10 @@ jobs:
     - name: Set execute permission for console
       run: chmod +x ./backend/bin/console
 
+    - name: dump-autoload
+      run: composer dump-autoload
+      working-directory: ./backend
+
     - name: Check Symfony requirements
       run: php bin/console about
       working-directory: ./backend
