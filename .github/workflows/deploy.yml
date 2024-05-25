@@ -79,7 +79,7 @@ jobs:
       working-directory: ./backend
 
     - name: Run PHPUnit tests
-      run: php ./bin/phpunit
+      run: ./bin/phpunit
       working-directory: ./backend
       # continue-on-error: true
 
