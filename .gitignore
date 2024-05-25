@@ -21,8 +21,6 @@
 !bin/symfony_requirements
 
 # Divers
-/.phpunit.result.cache
-/phpunit.xml.dist
 /.php_cs.cache
 /.php_cs.dist
 

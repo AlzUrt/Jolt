@@ -59,7 +59,7 @@ jobs:
         echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> ./backend/.env
 
     - name: Install Composer dependencies
-      run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+      run: composer install --verbose --no-progress --no-suggest --prefer-dist --optimize-autoloader
       working-directory: ./backend
 
     - name: Cache Composer packages
@@ -69,8 +69,10 @@ jobs:
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
         restore-keys: ${{ runner.os }}-composer-
 
-    - name: Set execute permission for console
-      run: chmod +x ./backend/bin/console
+    - name: Set execute permission for console and phpunit
+      run: |
+        chmod +x ./backend/bin/console
+        chmod +x ./backend/bin/phpunit
 
     - name: dump-autoload
       run: composer dump-autoload
