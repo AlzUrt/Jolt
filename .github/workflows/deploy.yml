@@ -85,7 +85,7 @@ jobs:
 
     - name: Install PHPUnit
       run: composer require --dev phpunit/phpunit --no-interaction --no-progress
-      working_directory: ./backend
+      working-directory: ./backend
 
     - name: Run PHPUnit tests
       run: ./vendor/bin/phpunit --verbose
