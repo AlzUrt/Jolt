@@ -1,1 +1,1 @@
-{"version":1,"defects":{"App\\Tests\\RegistrationTest::testSomething":5,"App\\Tests\\UserRegistrationTest::testUserRegistration":5},"times":{"App\\Tests\\RegistrationTest::testSomething":0.002,"App\\Tests\\UserRegistrationTest::testUserRegistration":7.084}}
+{"version":1,"defects":{"App\\Tests\\RegistrationTest::testSomething":5,"App\\Tests\\UserRegistrationTest::testUserRegistration":5},"times":{"App\\Tests\\RegistrationTest::testSomething":0.002,"App\\Tests\\UserRegistrationTest::testUserRegistration":2.351}}
