@@ -57,7 +57,7 @@ jobs:
         echo "JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem" >> ./backend/.env
         echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> ./backend/.env
         echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> ./backend/.env
-        echo 'JWT_TOKEN=${{ secrets.JWT_PASSPHRASE }}' >> /home/chabertamaury/www/backend/.env"
+        echo "JWT_TOKEN=${{ secrets.JWT_PASSPHRASE }}" >> ./backend/.env
 
     - name: Install Composer dependencies
       run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
