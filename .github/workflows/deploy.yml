@@ -79,8 +79,8 @@ jobs:
       working-directory: ./backend
 
     - name: Run PHPUnit tests
-      run: vendor/bin/phpunit
-      working-directory: ./instead of ./bin/phpunit
+      run: ./bin/phpunit
+      working-directory: ./backend
       # continue-on-error: true
 
     - name: Upload backend artifact
