@@ -77,13 +77,18 @@ jobs:
       run: |
         chmod +x ./backend/bin/console
         chmod +x ./backend/bin/phpunit
+        chmod +x ./vendor/bin/phpunit
 
     - name: dump-autoload
       run: composer dump-autoload
       working-directory: ./backend
 
+    - name: Install PHPUnit
+      run: composer require --dev phpunit/phpunit --no-interaction --no-progress
+      working_directory: ./backend
+
     - name: Run PHPUnit tests
-      run: ./bin/phpunit
+      run: ./vendor/bin/phpunit --verbose
       working-directory: ./backend
       # continue-on-error: true
 
