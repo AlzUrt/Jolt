@@ -76,14 +76,10 @@ jobs:
       run: composer dump-autoload
       working-directory: ./backend
 
-    # - name: Check Symfony requirements
-    #   run: php bin/console about
-    #   working-directory: ./backend
-
     - name: Run PHPUnit tests
       run: php ./bin/phpunit
       working-directory: ./backend
-      continue-on-error: true  # Continue if tests are risky
+      # continue-on-error: true
 
     - name: Upload backend artifact
       uses: actions/upload-artifact@v2
